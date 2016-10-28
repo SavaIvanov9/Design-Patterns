@@ -10,7 +10,7 @@ Flyweight Pattern-ът е шаблон, който се използва в об
 * Flyweight Factory - осигурява достъпа до Flyweight обектите. Създава обект, ако конкретният още не е използван/създаден или връща вече създаден обект от същия тип;
 
 Диаграма
-![pattern structure](../Images/flyweightdiagram.gif)
+![pattern structure](../Images/flyweight-diagram.gif)
 
 #### Demo
 ~~~c#
