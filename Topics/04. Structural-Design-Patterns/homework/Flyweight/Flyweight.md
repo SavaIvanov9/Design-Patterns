@@ -9,142 +9,106 @@ Flyweight Pattern-ът е шаблон, който се използва в об
 * Concrete Flyweight;
 * Flyweight Factory - осигурява достъпа до Flyweight обектите. Създава обект, ако конкретният още не е използван/създаден или връща вече създаден обект от същия тип;
 
-
-![pattern structure](Images/Flyweight-Structure.png)
+Диаграма
+![pattern structure](../Images/flyweightdiagram.gif)
 
 #### Demo
-###### Symbol
-~~~c#
-public abstract class Symbol
+using System;
+using System.Collections;
+
+namespace FlyweightPattern
 {
-    protected Symbol(char symbol)
+    /// <summary>
+    /// Launcher startup class for Structural Flyweight Design Pattern.
+    /// </summary>
+    class MainApp
     {
-        this.Character = symbol;
-    }
-
-    protected char Character { get; set; }
-    protected ConsoleColor Color { get; set; }
-
-    public virtual void Print()
-    {
-        var defaultColor = Console.ForegroundColor;
-
-        Console.ForegroundColor = this.Color;
-        Console.Write(this.Character);
-
-        Console.ForegroundColor = defaultColor;
-    }
-}
-~~~
-
-###### SymbolR, SymbolG, SymbolB, UnknownSymbol
-~~~c#
-public class SymbolR : Symbol
-{
-    public SymbolR(char symbol) : base(symbol)
-    {
-        this.Color = ConsoleColor.Red;
-    }
-}
-~~~
-
-~~~c#
-public class SymbolG : Symbol
-{
-    public SymbolG(char symbol) : base(symbol)
-    {
-        this.Color = ConsoleColor.DarkGreen;
-    }
-}
-~~~
-
-~~~c#
-public class SymbolB : Symbol
-{
-    public SymbolB(char symbol) : base(symbol)
-    {
-        this.Color = ConsoleColor.Blue;
-    }
-}
-~~~
-
-~~~c#
-class UnknownSymbol:Symbol
-{
-    public UnknownSymbol(char symbol) : base(symbol)
-    {
-    }
-
-    public override void Print()
-    {
-        Console.Write('_');
-    }
-}
-~~~
-
-###### Symbol Factory
-~~~c#
-public class SymbolFactory
-{
-    private readonly Dictionary<char, Symbol> symbols;
-
-    public SymbolFactory()
-    {
-        this.symbols = new Dictionary<char, Symbol>();
-    }
-
-    public Symbol GetSymbol(char symbol)
-    {
-        var key = char.ToUpper(symbol);
-
-        if (this.symbols.ContainsKey(key))
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+        static void Main()
         {
-            return this.symbols[key];
-        }
-        else
-        {
-            Symbol symbolObj;
+            // Arbitrary extrinsic state
+            int extrinsicstate = 22;
 
-            switch (key)
-            {
-                case 'R':
-                    symbolObj = new SymbolR('R');
-                    break;
-                case 'G':
-                    symbolObj = new SymbolG('G');
-                    break;
-                case 'B':
-                    symbolObj = new SymbolB('B');
-                    break;
-                default:
-                    symbolObj = new UnknownSymbol(key);
-                    break;
-            }
+            FlyweightFactory factory = new FlyweightFactory();
 
-            this.symbols.Add(key, symbolObj);
-            return symbolObj;
+            // Work with different flyweight instances
+            Flyweight fx = factory.GetFlyweight("X");
+            fx.Operation(--extrinsicstate);
+
+            Flyweight fy = factory.GetFlyweight("Y");
+            fy.Operation(--extrinsicstate);
+
+            Flyweight fz = factory.GetFlyweight("Z");
+            fz.Operation(--extrinsicstate);
+
+            UnsharedConcreteFlyweight fu = new
+                UnsharedConcreteFlyweight();
+
+            fu.Operation(--extrinsicstate);
+
+            // Wait for user
+            Console.ReadKey();
         }
     }
-}
-~~~
 
-###### Usage
-~~~c#
-static void Main()
-{
-    var symbols = "rgBARGb";
-    var symbolFactory = new SymbolFactory();
-
-    Console.WriteLine(symbols);
-
-    foreach (var s in symbols)
+    /// <summary>
+    /// The 'FlyweightFactory' class
+    /// </summary>
+    class FlyweightFactory
     {
-        var symbol = symbolFactory.GetSymbol(s);
-        symbol.Print();
+        private Hashtable flyweights = new Hashtable();
+
+        // Constructor
+        public FlyweightFactory()
+        {
+            flyweights.Add("X", new ConcreteFlyweight());
+            flyweights.Add("Y", new ConcreteFlyweight());
+            flyweights.Add("Z", new ConcreteFlyweight());
+        }
+
+        public Flyweight GetFlyweight(string key)
+        {
+            return ((Flyweight)flyweights[key]);
+        }
     }
-    Console.WriteLine();
+
+    /// <summary>
+    /// The 'Flyweight' abstract class
+    /// </summary>
+    abstract class Flyweight
+    {
+        public abstract void Operation(int extrinsicstate);
+    }
+
+    /// <summary>
+    /// The 'ConcreteFlyweight' class
+    /// </summary>
+    class ConcreteFlyweight : Flyweight
+    {
+        public override void Operation(int extrinsicstate)
+        {
+            Console.WriteLine("ConcreteFlyweight: " + extrinsicstate);
+        }
+    }
+
+    /// <summary>
+    /// The 'UnsharedConcreteFlyweight' class
+    /// </summary>
+    class UnsharedConcreteFlyweight : Flyweight
+    {
+        public override void Operation(int extrinsicstate)
+        {
+            Console.WriteLine("UnsharedConcreteFlyweight: " +
+                              extrinsicstate);
+        }
+    }
 }
 ~~~
 
 ###### Output
-![demo output](Images/Flyweight-Output.png)
+ConcreteFlyweight: 21
+ConcreteFlyweight: 20
+ConcreteFlyweight: 19
+UnsharedConcreteFlyweight: 18
