@@ -13,6 +13,7 @@ Flyweight Pattern-ът е шаблон, който се използва в об
 ![pattern structure](../Images/flyweightdiagram.gif)
 
 #### Demo
+~~~c#
 using System;
 using System.Collections;
 
@@ -108,7 +109,7 @@ namespace FlyweightPattern
 ~~~
 
 ###### Output
-ConcreteFlyweight: 21
-ConcreteFlyweight: 20
-ConcreteFlyweight: 19
-UnsharedConcreteFlyweight: 18
+ConcreteFlyweight: 21  
+ConcreteFlyweight: 20  
+ConcreteFlyweight: 19  
+UnsharedConcreteFlyweight: 18  
