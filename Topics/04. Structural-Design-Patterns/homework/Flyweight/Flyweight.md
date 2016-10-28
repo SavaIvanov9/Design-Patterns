@@ -9,7 +9,7 @@ Flyweight Pattern-ът е шаблон, който се използва в об
 * Concrete Flyweight;
 * Flyweight Factory - осигурява достъпа до Flyweight обектите. Създава обект, ако конкретният още не е използван/създаден или връща вече създаден обект от същия тип;
 
-Диаграма
+#### Диаграма
 ![pattern structure](../Images/flyweight-diagram.gif)
 
 #### Demo
