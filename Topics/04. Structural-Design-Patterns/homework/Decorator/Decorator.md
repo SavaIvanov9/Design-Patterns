@@ -10,98 +10,115 @@ Decorator Pattern-ът е шаблон, който се използва в об
 * Decorator – пази референция към компонент обекта и създава интерфейса, който съвпада с този на компонента;
 * ConcreteDecorator – прибавя нови функционалности към обекта;
 
-![pattern structure](Images/Decorator-Structure.png)
+![pattern structure](../Images/decorator-diagram.gif)
 
 #### Demo
-###### Vehicle
 ~~~c#
-public abstract class Vehicle
+using System;
+
+namespace DecoratorPattern
 {
-    protected Vehicle()
+    /// <summary>
+    /// Launccher class for Structural 
+    /// Decorator Design Pattern.
+    /// </summary>
+    class Launcher
     {
+        /// <summary>
+        /// Entry point into console application.
+        /// </summary>
+        static void Main()
+        {
+            // Create ConcreteComponent and two Decorators
+            ConcreteComponent c = new ConcreteComponent();
+            ConcreteDecoratorA d1 = new ConcreteDecoratorA();
+            ConcreteDecoratorB d2 = new ConcreteDecoratorB();
+
+            // Link decorators
+            d1.SetComponent(c);
+            d2.SetComponent(d1);
+
+            d2.Operation();
+
+            // Wait for user
+            Console.ReadKey();
+        }
     }
 
-    public abstract void Display();
+    /// <summary>
+    /// The 'Component' abstract class
+    /// </summary>
+    abstract class Component
+    {
+        public abstract void Operation();
+    }
+
+    /// <summary>
+    /// The 'ConcreteComponent' class
+    /// </summary>
+    class ConcreteComponent : Component
+    {
+        public override void Operation()
+        {
+            Console.WriteLine("ConcreteComponent.Operation()");
+        }
+    }
+
+    /// <summary>
+    /// The 'Decorator' abstract class
+    /// </summary>
+    abstract class Decorator : Component
+    {
+        protected Component component;
+
+        public void SetComponent(Component component)
+        {
+            this.component = component;
+        }
+
+        public override void Operation()
+        {
+            if (component != null)
+            {
+                component.Operation();
+            }
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteDecoratorA' class
+    /// </summary>
+    class ConcreteDecoratorA : Decorator
+    {
+        public override void Operation()
+        {
+            base.Operation();
+            Console.WriteLine("ConcreteDecoratorA.Operation()");
+        }
+    }
+
+    /// <summary>
+    /// The 'ConcreteDecoratorB' class
+    /// </summary>
+    class ConcreteDecoratorB : Decorator
+    {
+        public override void Operation()
+        {
+            base.Operation();
+            AddedBehavior();
+            Console.WriteLine("ConcreteDecoratorB.Operation()");
+        }
+
+        void AddedBehavior()
+        {
+        }
+    }
 }
-~~~
 
-###### BaseCar
-~~~c#
-public class BaseCar : Vehicle
-{
-    public override void Display()
-    {
-        Console.WriteLine("Base package: added");
-    }
-}
-~~~
 
-###### Decorator
-~~~c#
-internal abstract class Decorator : Vehicle
-{
-    protected Decorator(Vehicle vehicle)
-    {
-        this.Vehicle = vehicle;
-    }
-
-    protected Vehicle Vehicle { get; set; }
-
-    public override void Display()
-    {
-        this.Vehicle.Display();
-    }
-}
-~~~
-
-###### VehicleWithLightPackage
-~~~c#
-public class VehicleWithLightPackage : Decorator
-{
-    public VehicleWithLightPackage(Vehicle vehicle) : base(vehicle)
-    {
-    }
-
-    public override void Display()
-    {
-        base.Vehicle.Display();
-        Console.WriteLine("Light package: added");
-    }
-}
-~~~
-
-###### VehicleWithSmokerPackage
-~~~c#
-public class VehicleWithSmokerPackage : Decorator
-{
-    public VehicleWithSmokerPackage(Vehicle vehicle) : base(vehicle)
-    {
-    }
-
-    public override void Display()
-    {
-        base.Display();
-        Console.WriteLine("Smoker package: added");
-    }
-}
-~~~
-
-###### Usage
-~~~c#
-static void Main()
-{
-    var vehicle = new BaseCar();
-    vehicle.Display();
-    Console.WriteLine();
-
-    var lightsCar = new VehicleWithLightPackage(vehicle);
-    lightsCar.Display();
-    Console.WriteLine();
-
-    var smokerCar = new VehicleWithSmokerPackage(lightsCar);
-    smokerCar.Display();
-}
 ~~~
 
 ###### Output
-![demo output](Images/Decorator-Output.png)
+ConcreteComponent.Operation()  
+ConcreteDecoratorA.Operation()  
+ConcreteDecoratorB.Operation()  

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DecoratorPattern
 {
     /// <summary>
-    /// Launcher class for Structural Decorator Design Pattern.
+    /// Launccher class for Structural 
+    /// Decorator Design Pattern.
     /// </summary>
     class Launcher
     {
