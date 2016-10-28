@@ -18,110 +18,136 @@ Composite Pattern-ът е шаблон, който се използва в об
 ![pattern structure](Images/Composite-Structure.png)
 
 #### Demo
-###### FileSystemEntity
+###### 
 ~~~c#
-public abstract class FileSystemEntity
+using System;
+using System.Collections.Generic;
+
+namespace DoFactory.GangOfFour.Composite.Structural
 {
-    protected FileSystemEntity(string name)
+  /// <summary>
+  /// MainApp startup class for Structural 
+  /// Composite Design Pattern.
+  /// </summary>
+  class MainApp
+  {
+    /// <summary>
+    /// Entry point into console application.
+    /// </summary>
+    static void Main()
     {
-        this.Name = name;
+      // Create a tree structure
+      Composite root = new Composite("root");
+      root.Add(new Leaf("Leaf A"));
+      root.Add(new Leaf("Leaf B"));
+
+      Composite comp = new Composite("Composite X");
+      comp.Add(new Leaf("Leaf XA"));
+      comp.Add(new Leaf("Leaf XB"));
+
+      root.Add(comp);
+      root.Add(new Leaf("Leaf C"));
+
+      // Add and remove a leaf
+      Leaf leaf = new Leaf("Leaf D");
+      root.Add(leaf);
+      root.Remove(leaf);
+
+      // Recursively display tree
+      root.Display(1);
+
+      // Wait for user
+      Console.ReadKey();
+    }
+  }
+
+  /// <summary>
+  /// The 'Component' abstract class
+  /// </summary>
+  abstract class Component
+  {
+    protected string name;
+
+    // Constructor
+    public Component(string name)
+    {
+      this.name = name;
     }
 
-    public string Name { get; private set; }
+    public abstract void Add(Component c);
+    public abstract void Remove(Component c);
+    public abstract void Display(int depth);
+  }
 
-    public abstract void Print(int padding);
-}
-~~~
+  /// <summary>
+  /// The 'Composite' class
+  /// </summary>
+  class Composite : Component
+  {
+    private List<Component> _children = new List<Component>();
 
-###### File
-~~~c#
-public class File : FileSystemEntity
-{
-    public File(string name) : base(name)
+    // Constructor
+    public Composite(string name)
+      : base(name)
     {
     }
 
-    public override void Print(int padding)
+    public override void Add(Component component)
     {
-        Console.WriteLine(new string(' ', padding) + $"- {this.Name}");
-    }
-}
-~~~
-
-###### Folder
-~~~c#
-public class Folder : FileSystemEntity
-{
-    private readonly ICollection<FileSystemEntity> content; 
-
-    public Folder(string name) : base(name)
-    {
-        this.content = new List<FileSystemEntity>();
+      _children.Add(component);
     }
 
-    public void Add(FileSystemEntity entity)
+    public override void Remove(Component component)
     {
-        this.content.Add(entity);
+      _children.Remove(component);
     }
 
-    public void Remove(FileSystemEntity entity)
+    public override void Display(int depth)
     {
-        this.content.Remove(entity);
+      Console.WriteLine(new String('-', depth) + name);
+
+      // Recursively display child nodes
+      foreach (Component component in _children)
+      {
+        component.Display(depth + 2);
+      }
+    }
+  }
+
+  /// <summary>
+  /// The 'Leaf' class
+  /// </summary>
+  class Leaf : Component
+  {
+    // Constructor
+    public Leaf(string name)
+      : base(name)
+    {
     }
 
-    public override void Print(int padding)
+    public override void Add(Component c)
     {
-        Console.WriteLine(new string(' ', padding) + $"* {this.Name}");
-
-        foreach (var fileSystemEntity in this.content)
-        {
-            fileSystemEntity.Print(padding + 3);
-        }
+      Console.WriteLine("Cannot add to a leaf");
     }
-}
-~~~
 
-###### Usage
-~~~c#
-static void Main()
-{
-    var programFilesFolder = new Folder("Program Files");
+    public override void Remove(Component c)
+    {
+      Console.WriteLine("Cannot remove from a leaf");
+    }
 
-    var whoCrashedFolder = new Folder("WhoCrashed");
-    whoCrashedFolder.Add(new File("readme.txt"));
-    whoCrashedFolder.Add(new File("rspCrash32.inf"));
-    whoCrashedFolder.Add(new File("rspCrash32.sys"));
-    whoCrashedFolder.Add(new File("rspCrash64.inf"));
-    whoCrashedFolder.Add(new File("rspCrash64.sys"));
-    whoCrashedFolder.Add(new File("rspSymSrv32.dll"));
-    whoCrashedFolder.Add(new File("symsrv.dll"));
-    whoCrashedFolder.Add(new File("unins000.dat"));
-    whoCrashedFolder.Add(new File("unins000.exe"));
-    whoCrashedFolder.Add(new File("WhoCrashed.exe"));
-    whoCrashedFolder.Add(new File("WhoCrashed32.dll"));
-    whoCrashedFolder.Add(new File("WhoCrashedEx.exe"));
-    whoCrashedFolder.Add(new File("LICENSE.TXT"));
-
-    programFilesFolder.Add(whoCrashedFolder);
-    
-    
-    var versionFolder = new Folder("3.0");
-    var binFolder = new Folder("bin");
-    binFolder.Add(new File("mongod.exe"));
-    binFolder.Add(new File("..."));
-    versionFolder.Add(binFolder);
-    versionFolder.Add(new File("GNU-AGPL-3.0"));
-    versionFolder.Add(new File("README"));
-    versionFolder.Add(new File("THIRD-PARTY-NOTICES"));
-    var serverFolder = new Folder("Server");
-    serverFolder.Add(versionFolder);
-    var mongoDbFolder = new Folder("MongoDB");
-    mongoDbFolder.Add(serverFolder);
-    programFilesFolder.Add(mongoDbFolder);
-
-    programFilesFolder.Print(0);
+    public override void Display(int depth)
+    {
+      Console.WriteLine(new String('-', depth) + name);
+    }
+  }
 }
 ~~~
 
 ###### Output
-![demo output](Images/Composite-Output.png)
+-root  
+---Leaf A  
+---Leaf B  
+---Composite X  
+-----Leaf XA  
+-----Leaf XB  
+---Leaf C  
