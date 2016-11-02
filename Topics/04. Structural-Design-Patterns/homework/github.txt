@@ -1,0 +1,1 @@
+https://github.com/SavaIvanov9/Design-Patterns/tree/master/Topics/04.%20Structural-Design-Patterns/homework
